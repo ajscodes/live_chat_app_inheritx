@@ -86,6 +86,7 @@ class ChatController with ChangeNotifier {
       _isSending = false;
       notifyListeners();
       return true;
+
     } catch (e) {
       _isSending = false;
       _errorMessage = 'Failed to send message: ${e.toString()}';
