@@ -4,7 +4,7 @@ import '../../controllers/auth_controller.dart';
 import '../../controllers/chat_controller.dart';
 import '../../models/message_model.dart';
 import '../../models/user_model.dart';
-import 'widgets/chat_bubble.dart';
+import 'widgets/chat_message.dart';
 
 class ChatView extends StatefulWidget {
   final UserModel receiver;

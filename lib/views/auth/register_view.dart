@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
+import '../../utils/string_constants.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -33,17 +34,17 @@ class _RegisterViewState extends State<RegisterView> {
     final success = await authController.register(
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
+      password: _passwordController.text,
     );
 
     if (!mounted) return;
 
     if (success) {
       Navigator.pop(context);
-    } else if (authController.errorMessage != null) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(authController.errorMessage!),
+          content: Text(RegisterViewConstants.registerViewFailedSnackBar),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -56,7 +57,7 @@ class _RegisterViewState extends State<RegisterView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: const Text(RegisterViewConstants.registerViewAppBarTitle),
         elevation: 0,
       ),
       body: SafeArea(
@@ -70,14 +71,14 @@ class _RegisterViewState extends State<RegisterView> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Get Started',
+                    RegisterViewConstants.registerViewHeading,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Join and start chatting with users instantly',
+                    RegisterViewConstants.registerViewSubHeading,
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 28),
@@ -86,8 +87,8 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _nameController,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                      labelText: 'Full Name',
-                      hintText: 'John Doe',
+                      labelText: RegisterViewConstants.registerViewNameLabel,
+                      hintText: RegisterViewConstants.registerViewNameHint,
                       prefixIcon: const Icon(Icons.person_outline),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -95,7 +96,7 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return 'Please enter your name';
+                        return RegisterViewConstants.registerViewNameRequiredError;
                       }
                       return null;
                     },
@@ -106,8 +107,8 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'Email Address',
-                      hintText: 'user@example.com',
+                      labelText: RegisterViewConstants.registerViewEmailLabel,
+                      hintText: RegisterViewConstants.registerViewEmailHint,
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -115,10 +116,10 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return 'Please enter your email';
+                        return RegisterViewConstants.registerViewEmailRequiredError;
                       }
                       if (!val.contains('@') || !val.contains('.')) {
-                        return 'Please enter a valid email address';
+                        return RegisterViewConstants.registerViewEmailInvalidError;
                       }
                       return null;
                     },
@@ -129,7 +130,7 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: RegisterViewConstants.registerViewPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -148,11 +149,11 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                     validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Please enter a password';
+                      if (val == null || val.isEmpty) {
+                        return RegisterViewConstants.registerViewPasswordRequiredError;
                       }
                       if (val.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return RegisterViewConstants.registerViewPasswordLengthError;
                       }
                       return null;
                     },
@@ -163,18 +164,18 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _confirmPasswordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      labelText: 'Confirm Password',
+                      labelText: RegisterViewConstants.registerViewConfirmPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_clock_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Please confirm your password';
+                      if (val == null || val.isEmpty) {
+                        return RegisterViewConstants.registerViewConfirmPasswordRequiredError;
                       }
                       if (val != _passwordController.text) {
-                        return 'Passwords do not match';
+                        return RegisterViewConstants.registerViewPasswordMismatchError;
                       }
                       return null;
                     },
@@ -192,20 +193,20 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     child: authController.isLoading
                         ? const SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: Colors.white,
-                            ),
-                          )
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.white,
+                      ),
+                    )
                         : const Text(
-                            'Create Account',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      RegisterViewConstants.registerViewAppBarTitle,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
 
@@ -213,7 +214,7 @@ class _RegisterViewState extends State<RegisterView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Already have an account? ',
+                        RegisterViewConstants.registerViewAlreadyHaveAccount,
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                       GestureDetector(
@@ -221,7 +222,7 @@ class _RegisterViewState extends State<RegisterView> {
                           Navigator.pop(context);
                         },
                         child: Text(
-                          'Sign In',
+                          RegisterViewConstants.registerViewSignInAction,
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,

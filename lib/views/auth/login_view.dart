@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:live_chat_app_inheritx/utils/string_constants.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
 import 'register_view.dart';
@@ -29,15 +30,15 @@ class _LoginViewState extends State<LoginView> {
     final authController = Provider.of<AuthController>(context, listen: false);
     final success = await authController.login(
       email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
+      password: _passwordController.text,
     );
 
     if (!mounted) return;
 
-    if (!success && authController.errorMessage != null) {
+    if (!success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authController.errorMessage!),
+        const SnackBar(
+          content: Text(LoginViewConstants.loginViewFailedSnackBar),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -59,7 +60,6 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-
                   CircleAvatar(
                     radius: 42,
                     backgroundColor: Theme.of(context).primaryColor.withOpacity(0.12),
@@ -72,15 +72,15 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(height: 20),
 
                   Text(
-                    'Welcome Back',
+                    LoginViewConstants.loginViewHeading,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Sign in to connect with friends in real-time',
+                    LoginViewConstants.loginViewSubHeading,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey[600]),
                   ),
@@ -90,8 +90,8 @@ class _LoginViewState extends State<LoginView> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'Email Address',
-                      hintText: 'user@example.com',
+                      labelText: RegisterViewConstants.registerViewEmailLabel,
+                      hintText: RegisterViewConstants.registerViewEmailHint,
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -99,10 +99,10 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return 'Please enter your email';
+                        return RegisterViewConstants.registerViewEmailRequiredError;
                       }
                       if (!val.contains('@') || !val.contains('.')) {
-                        return 'Please enter a valid email';
+                        return RegisterViewConstants.registerViewEmailRequiredError;
                       }
                       return null;
                     },
@@ -113,7 +113,7 @@ class _LoginViewState extends State<LoginView> {
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: RegisterViewConstants.registerViewPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -132,11 +132,11 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                     validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Please enter your password';
+                      if (val == null || val.isEmpty) {
+                        return RegisterViewConstants.registerViewEmailRequiredError;
                       }
                       if (val.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return RegisterViewConstants.registerViewPasswordLengthError;
                       }
                       return null;
                     },
@@ -154,20 +154,20 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     child: authController.isLoading
                         ? const SizedBox(
-                            height: 22,
-                            width: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: Colors.white,
-                            ),
-                          )
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.white,
+                      ),
+                    )
                         : const Text(
-                            'Sign In',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      LoginViewConstants.loginViewSubmitButton,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
 
@@ -175,12 +175,11 @@ class _LoginViewState extends State<LoginView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Don't have an account? ",
+                        LoginViewConstants.loginViewDontHaveAccount,
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                       GestureDetector(
                         onTap: () {
-                          authController.clearError();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -189,7 +188,7 @@ class _LoginViewState extends State<LoginView> {
                           );
                         },
                         child: Text(
-                          'Sign Up',
+                          LoginViewConstants.loginViewSignUpAction,
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
