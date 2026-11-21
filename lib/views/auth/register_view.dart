@@ -39,7 +39,6 @@ class _RegisterViewState extends State<RegisterView> {
     if (!mounted) return;
 
     if (success) {
-      // Pop back to root or LoginView; the authState listener will transition to HomeView
       Navigator.pop(context);
     } else if (authController.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -83,7 +82,6 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const SizedBox(height: 28),
 
-                  // Name Field
                   TextFormField(
                     controller: _nameController,
                     textCapitalization: TextCapitalization.words,
@@ -104,7 +102,6 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Email Field
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -128,7 +125,6 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Password Field
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -163,7 +159,6 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Confirm Password Field
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: _obscurePassword,
@@ -186,7 +181,6 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const SizedBox(height: 28),
 
-                  // Sign Up Button
                   ElevatedButton(
                     onPressed: authController.isLoading ? null : _submitRegister,
                     style: ElevatedButton.styleFrom(
@@ -215,7 +209,6 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Already have account
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

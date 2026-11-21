@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// User Model representing a registered user in Firestore.
-/// Matches the /users/{userId} security rules.
 class UserModel {
   final String uid;
   final String name;
@@ -15,7 +13,6 @@ class UserModel {
     required this.createdAt,
   });
 
-  /// Convert to Map for saving to Firestore
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -25,7 +22,6 @@ class UserModel {
     };
   }
 
-  /// Create UserModel from Firestore document snapshot
   factory UserModel.fromMap(Map<String, dynamic> map, String id) {
     DateTime parsedCreatedAt;
     final createdVal = map['createdAt'];

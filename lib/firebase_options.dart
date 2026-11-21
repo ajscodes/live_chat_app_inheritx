@@ -31,13 +31,12 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDTC3x2Uvm4f_13MCYNURcSYoL6GDTDyWk',
-    appId: '1:843066264982:android:c832d83893dba8689e61b7',
-    messagingSenderId: '843066264982',
-    projectId: 'fir-learning-d94b2',
-    storageBucket: 'fir-learning-d94b2.firebasestorage.app',
+    apiKey: 'AIzaSyBvPY6NKjxiMG3ZufisQaTRodk8ZieHlaE',
+    appId: '1:837424757599:android:126f8e85e29dfc24f314ea',
+    messagingSenderId: '837424757599',
+    projectId: 'chat-app-be033',
+    storageBucket: 'chat-app-be033.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDUC3u4O2-xSHA3FDHqLP6qfOYlr_mJWNI',
     appId: '1:843066264982:ios:b4db21e4e7d571759e61b7',

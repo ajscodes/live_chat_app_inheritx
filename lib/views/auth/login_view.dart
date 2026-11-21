@@ -59,7 +59,7 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // App Icon / Logo
+
                   CircleAvatar(
                     radius: 42,
                     backgroundColor: Theme.of(context).primaryColor.withOpacity(0.12),
@@ -71,7 +71,6 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Title & Subtitle
                   Text(
                     'Welcome Back',
                     textAlign: TextAlign.center,
@@ -87,7 +86,6 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Email Field
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -111,7 +109,6 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Password Field
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -146,7 +143,6 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Login Button
                   ElevatedButton(
                     onPressed: authController.isLoading ? null : _submitLogin,
                     style: ElevatedButton.styleFrom(
@@ -175,7 +171,6 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Navigation to Register View
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

@@ -49,7 +49,6 @@ class _ChatViewState extends State<ChatView> {
     );
 
     if (sent) {
-      // Delay slightly so the new message widget is inserted before scrolling
       Future.delayed(const Duration(milliseconds: 100), _scrollToBottom);
     } else if (chatController.errorMessage != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -112,7 +111,6 @@ class _ChatViewState extends State<ChatView> {
       ),
       body: Column(
         children: [
-          // Messages List View
           Expanded(
             child: StreamBuilder<List<MessageModel>>(
               stream: chatController.getMessagesStream(widget.receiver.uid),
@@ -165,7 +163,6 @@ class _ChatViewState extends State<ChatView> {
                   );
                 }
 
-                // Auto-scroll when new items arrive
                 WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
                 return ListView.builder(
@@ -176,7 +173,7 @@ class _ChatViewState extends State<ChatView> {
                     final message = messages[index];
                     final isCurrentUser = message.senderId == currentUserId;
 
-                    return ChatBubble(
+                    return ChatMessage(
                       message: message,
                       isCurrentUser: isCurrentUser,
                     );
@@ -186,7 +183,6 @@ class _ChatViewState extends State<ChatView> {
             ),
           ),
 
-          // Message Input Field
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(

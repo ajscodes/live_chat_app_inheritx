@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import '../models/message_model.dart';
 import '../models/user_model.dart';
 
-/// ChatController manages real-time messaging and user list retrieval.
-/// Extends ChangeNotifier to provide reactive state across the app.
 class ChatController with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -16,8 +14,7 @@ class ChatController with ChangeNotifier {
   bool get isSending => _isSending;
   String? get errorMessage => _errorMessage;
 
-  /// Real-time stream of all users except the currently logged-in user.
-  /// Firestore rule: allow read: if request.auth != null;
+
   Stream<List<UserModel>> getUsersStream() {
     final currentUserId = _auth.currentUser?.uid;
 
@@ -32,18 +29,10 @@ class ChatController with ChangeNotifier {
     });
   }
 
-  /// Real-time stream of messages between the current user and the peer.
-  /// Complies strictly with Firestore security rule:
-  /// allow read: if request.auth != null
-  ///   && (request.auth.uid == resource.data.senderId
-  ///   || request.auth.uid == resource.data.receiverId);
   Stream<List<MessageModel>> getMessagesStream(String otherUserId) {
     final currentUserId = _auth.currentUser?.uid;
     if (currentUserId == null) return const Stream.empty();
 
-    // Query messages where:
-    // (senderId == currentUserId && receiverId == otherUserId) OR
-    // (senderId == otherUserId && receiverId == currentUserId)
     return _firestore
         .collection('messages')
         .where(
@@ -64,18 +53,11 @@ class ChatController with ChangeNotifier {
           .map((doc) => MessageModel.fromMap(doc.data(), doc.id))
           .toList();
 
-      // Sort chronologically by timestamp in-memory (no composite index required)
       messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
       return messages;
     });
   }
 
-  /// Send a new message to the peer.
-  /// Complies strictly with Firestore create security rule:
-  /// allow create: if request.auth != null
-  ///   && request.resource.data.senderId == request.auth.uid
-  ///   && request.resource.data.receiverId is string
-  ///   && request.resource.data.message is string;
   Future<bool> sendMessage({
     required String receiverId,
     required String message,

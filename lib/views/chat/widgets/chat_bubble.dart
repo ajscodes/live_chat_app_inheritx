@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../models/message_model.dart';
 
-class ChatBubble extends StatelessWidget {
+class ChatMessage extends StatelessWidget {
   final MessageModel message;
   final bool isCurrentUser;
 
-  const ChatBubble({
+  const ChatMessage({
     super.key,
     required this.message,
     required this.isCurrentUser,

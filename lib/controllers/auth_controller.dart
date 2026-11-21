@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 
-/// AuthController manages Firebase Authentication and user profile creation in Firestore.
-/// Extends ChangeNotifier to update UI views via Provider.
+
 class AuthController with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -15,14 +14,12 @@ class AuthController with ChangeNotifier {
 
   AuthController() {
     _currentUser = _auth.currentUser;
-    // Listen to Firebase Auth state changes
     _auth.authStateChanges().listen((User? user) {
       _currentUser = user;
       notifyListeners();
     });
   }
 
-  // Getters
   User? get currentUser => _currentUser;
   bool get isAuthenticated => _currentUser != null;
   bool get isLoading => _isLoading;
@@ -38,14 +35,11 @@ class AuthController with ChangeNotifier {
     notifyListeners();
   }
 
-  /// Clear any error message
   void clearError() {
     _errorMessage = null;
     notifyListeners();
   }
 
-  /// Register user with Email, Password, and Display Name
-  /// Creates auth account + adds document to `/users/{userId}` adhering to Firestore rules.
   Future<bool> register({
     required String name,
     required String email,
@@ -55,7 +49,6 @@ class AuthController with ChangeNotifier {
     _setError(null);
 
     try {
-      // 1. Create account in Firebase Auth
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
@@ -63,11 +56,8 @@ class AuthController with ChangeNotifier {
 
       final user = userCredential.user;
       if (user != null) {
-        // Update display name in Firebase Auth
         await user.updateDisplayName(name.trim());
 
-        // 2. Create document in Firestore: /users/{userId}
-        // Satisfies rule: request.auth != null && request.auth.uid == userId
         final userModel = UserModel(
           uid: user.uid,
           name: name.trim(),
@@ -96,7 +86,6 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  /// Login user with Email and Password
   Future<bool> login({
     required String email,
     required String password,
@@ -114,7 +103,6 @@ class AuthController with ChangeNotifier {
       if (user != null) {
         _currentUser = user;
 
-        // Ensure user document exists in Firestore (creates if not present)
         final docRef = _firestore.collection('users').doc(user.uid);
         final docSnapshot = await docRef.get();
         if (!docSnapshot.exists) {
@@ -140,7 +128,6 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  /// Logout current user
   Future<void> logout() async {
     try {
       await _auth.signOut();
@@ -152,7 +139,6 @@ class AuthController with ChangeNotifier {
     }
   }
 
-  /// Helper to convert Firebase error codes to readable text
   String _getFriendlyErrorMessage(String code, String? defaultMsg) {
     switch (code) {
       case 'user-not-found':

@@ -1,95 +1,45 @@
 {
   "project_info": {
-    "project_number": "843066264982",
-    "project_id": "fir-learning-d94b2",
-    "storage_bucket": "fir-learning-d94b2.firebasestorage.app"
+    "project_number": "837424757599",
+    "project_id": "chat-app-be033",
+    "storage_bucket": "chat-app-be033.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:843066264982:android:c832d83893dba8689e61b7",
+        "mobilesdk_app_id": "1:837424757599:android:561c810c983e93fef314ea",
         "android_client_info": {
-          "package_name": "com.example.firebase_learning"
+          "package_name": "com.example.chat_app_inheritx"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "843066264982-emnhaeu95a1vit6a6s1dkad3r1agdpda.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.firebase_learning",
-            "certificate_hash": "b915ebe361584b2db4d75b50879f103045f30572"
-          }
-        },
-        {
-          "client_id": "843066264982-s6hos5qccduia4ecmice6uta3thgvs9r.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.firebase_learning",
-            "certificate_hash": "49d45501cfa97c3e6dd4a308f7a4b28501bd810e"
-          }
-        },
-        {
-          "client_id": "843066264982-itk882d6gbsopbfi3tmeqbgv7pc5t9va.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDTC3x2Uvm4f_13MCYNURcSYoL6GDTDyWk"
+          "current_key": "AIzaSyBvPY6NKjxiMG3ZufisQaTRodk8ZieHlaE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "843066264982-itk882d6gbsopbfi3tmeqbgv7pc5t9va.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "843066264982-fmc4ncj7bg926h5gphp5qhoiaein8ud9.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.firebaseLearning"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:843066264982:android:b7fb4c92062a9c0f9e61b7",
+        "mobilesdk_app_id": "1:837424757599:android:126f8e85e29dfc24f314ea",
         "android_client_info": {
-          "package_name": "com.example.firestore_learning_inheritx"
+          "package_name": "com.example.live_chat_app_inheritx"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "843066264982-itk882d6gbsopbfi3tmeqbgv7pc5t9va.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDTC3x2Uvm4f_13MCYNURcSYoL6GDTDyWk"
+          "current_key": "AIzaSyBvPY6NKjxiMG3ZufisQaTRodk8ZieHlaE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "843066264982-itk882d6gbsopbfi3tmeqbgv7pc5t9va.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "843066264982-fmc4ncj7bg926h5gphp5qhoiaein8ud9.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.firebaseLearning"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

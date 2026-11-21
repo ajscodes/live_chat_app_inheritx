@@ -10,7 +10,6 @@ import 'views/home/home_view.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase with configured options
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -37,7 +36,7 @@ class LiveChatApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1E88E5), // Clean modern blue
+          seedColor: const Color(0xFF1E88E5),
           brightness: Brightness.light,
         ),
         appBarTheme: const AppBarTheme(
@@ -56,7 +55,7 @@ class LiveChatApp extends StatelessWidget {
           ),
         ),
       ),
-      // Automatically route user based on Firebase Auth state
+
       home: Consumer<AuthController>(
         builder: (context, authController, _) {
           if (authController.isAuthenticated) {
