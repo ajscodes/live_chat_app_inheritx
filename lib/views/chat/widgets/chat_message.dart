@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:live_chat_app_inheritx/utils/string_constants.dart';
 import '../../../models/message_model.dart';
 
 class ChatMessage extends StatelessWidget {
@@ -15,7 +16,7 @@ class ChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final timeStr = DateFormat('hh:mm a').format(message.timestamp);
+    final timeStr = DateFormat(ChatViewConstants.messageDateFormate).format(message.timestamp);
 
     return Align(
       alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -38,7 +39,7 @@ class ChatMessage extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),

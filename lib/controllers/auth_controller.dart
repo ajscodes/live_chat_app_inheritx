@@ -1,27 +1,20 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 
-class AuthController with ChangeNotifier {
+class AuthController extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  User? _currentUser;
   bool _isLoading = false;
-  late final StreamSubscription<User?> _authSubscription;
 
   AuthController() {
-    _currentUser = _auth.currentUser;
-    _authSubscription = _auth.authStateChanges().listen((User? user) {
-      _currentUser = user;
-      notifyListeners();
-    });
+    _auth.authStateChanges().listen((_) => notifyListeners());
   }
 
-  User? get currentUser => _currentUser;
-  bool get isAuthenticated => _currentUser != null;
+  User? get currentUser => _auth.currentUser; //user Object return in case log in
+  bool get isAuthenticated => _auth.currentUser != null;
   bool get isLoading => _isLoading;
 
   void _setLoading(bool loading) {
@@ -52,16 +45,11 @@ class AuthController with ChangeNotifier {
           createdAt: DateTime.now(),
         );
 
-        await _firestore
-            .collection('users')
-            .doc(user.uid)
-            .set(userModel.toMap());
-
-        _currentUser = user;
+        await _firestore.collection('users').doc(user.uid).set(userModel.toMap());
       }
       return true;
     } catch (e) {
-      debugPrint('Register error: $e');
+      print('Register error: $e');
       return false;
     } finally {
       _setLoading(false);
@@ -81,23 +69,23 @@ class AuthController with ChangeNotifier {
 
       final user = credential.user;
       if (user != null) {
-        _currentUser = user;
-
         final docRef = _firestore.collection('users').doc(user.uid);
         final doc = await docRef.get();
 
+        //execute when user data in firebase auth but not in firestore so it will create in firestore
         if (!doc.exists) {
-          await docRef.set({
-            'uid': user.uid,
-            'name': user.displayName ?? email.split('@').first,
-            'email': user.email ?? email.trim(),
-            'createdAt': FieldValue.serverTimestamp(),
-          });
+          final userModel = UserModel(
+            uid: user.uid,
+            name: user.displayName ?? email.split('@').first,
+            email: user.email ?? email.trim(),
+            createdAt: DateTime.now(),
+          );
+          await docRef.set(userModel.toMap());
         }
       }
       return true;
     } catch (e) {
-      debugPrint('Login error: $e');
+      print('Login error: $e');
       return false;
     } finally {
       _setLoading(false);
@@ -106,13 +94,5 @@ class AuthController with ChangeNotifier {
 
   Future<void> logout() async {
     await _auth.signOut();
-    _currentUser = null;
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _authSubscription.cancel();
-    super.dispose();
   }
 }

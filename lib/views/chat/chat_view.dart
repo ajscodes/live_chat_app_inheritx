@@ -4,6 +4,7 @@ import '../../controllers/auth_controller.dart';
 import '../../controllers/chat_controller.dart';
 import '../../models/message_model.dart';
 import '../../models/user_model.dart';
+import '../../utils/string_constants.dart';
 import 'widgets/chat_message.dart';
 
 class ChatView extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ChatViewState extends State<ChatView> {
     }
   }
 
-  void _sendMessage() async {
+  Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
 
@@ -48,12 +49,15 @@ class _ChatViewState extends State<ChatView> {
       message: text,
     );
 
+    if (!mounted) return;
+
     if (sent) {
       Future.delayed(const Duration(milliseconds: 100), _scrollToBottom);
-    } else if (chatController.errorMessage != null && mounted) {
+    } else {
+      _messageController.text = text; // Restore text so user doesn't lose it
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(chatController.errorMessage!),
+        const SnackBar(
+          content: Text('Failed to send message'),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -62,9 +66,8 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    final authController = Provider.of<AuthController>(context);
-    final chatController = Provider.of<ChatController>(context);
-    final currentUserId = authController.currentUser?.uid ?? '';
+    final currentUserId =
+        Provider.of<AuthController>(context, listen: false).currentUser?.uid ?? '';
 
     return Scaffold(
       appBar: AppBar(
@@ -99,7 +102,7 @@ class _ChatViewState extends State<ChatView> {
                     widget.receiver.email,
                     style: TextStyle(
                       fontSize: 11,
-                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                      color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -113,14 +116,15 @@ class _ChatViewState extends State<ChatView> {
         children: [
           Expanded(
             child: StreamBuilder<List<MessageModel>>(
-              stream: chatController.getMessagesStream(widget.receiver.uid),
+              stream: Provider.of<ChatController>(context, listen: false)
+                  .getMessagesStream(widget.receiver.uid),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        'Error loading messages: ${snapshot.error}',
+                        '${ChatViewConstants.messageError}: ${snapshot.error}',
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: Colors.red),
                       ),
@@ -142,11 +146,11 @@ class _ChatViewState extends State<ChatView> {
                         Icon(
                           Icons.chat_outlined,
                           size: 64,
-                          color: Colors.grey.withOpacity(0.4),
+                          color: Colors.grey.withValues(alpha: 0.4),
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'No messages yet',
+                          ChatViewConstants.noMessage,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey[600],
@@ -155,7 +159,7 @@ class _ChatViewState extends State<ChatView> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Say hello to ${widget.receiver.name}!',
+                          '${ChatViewConstants.sayHello} ${widget.receiver.name}!',
                           style: TextStyle(fontSize: 13, color: Colors.grey[500]),
                         ),
                       ],
@@ -182,14 +186,13 @@ class _ChatViewState extends State<ChatView> {
               },
             ),
           ),
-
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, -1),
                 ),
@@ -205,7 +208,7 @@ class _ChatViewState extends State<ChatView> {
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
-                        hintText: 'Type a message...',
+                        hintText: ChatViewConstants.typeMessage,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 10,
@@ -221,26 +224,31 @@ class _ChatViewState extends State<ChatView> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      icon: chatController.isSending
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Icon(
-                              Icons.send_rounded,
+                  Selector<ChatController, bool>(
+                    selector: (_, controller) => controller.isSending,
+                    builder: (context, isSending, _) {
+                      return CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: IconButton(
+                          icon: isSending
+                              ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
                               color: Colors.white,
-                              size: 20,
                             ),
-                      onPressed: chatController.isSending ? null : _sendMessage,
-                    ),
+                          )
+                              : const Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          onPressed: isSending ? null : _sendMessage,
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

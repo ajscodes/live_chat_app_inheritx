@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/chat_controller.dart';
 import '../../models/user_model.dart';
+import '../../utils/string_constants.dart';
 import '../chat/chat_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -44,16 +45,16 @@ class HomeView extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Live Chat',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            Text(
+              HomeViewConstants.homeViewAppBarTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             if (currentUser != null)
               Text(
                 currentUser.displayName ?? currentUser.email ?? '',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                  color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                 ),
               ),
           ],
@@ -61,7 +62,7 @@ class HomeView extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout_rounded),
-            tooltip: 'Logout',
+            tooltip: HomeViewConstants.homeViewLogout,
             onPressed: () => _showLogoutDialog(context, authController),
           ),
         ],
@@ -74,7 +75,7 @@ class HomeView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Text(
-                  'Error loading users: ${snapshot.error}',
+                  '${HomeViewConstants.homeViewErrorLoadingUsers} ${snapshot.error}',
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.red),
                 ),
@@ -98,16 +99,16 @@ class HomeView extends StatelessWidget {
                     Icon(
                       Icons.people_outline_rounded,
                       size: 72,
-                      color: Colors.grey.withOpacity(0.4),
+                      color: Colors.grey.withValues(alpha: 0.4),
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'No other users yet',
+                      HomeViewConstants.homeViewNoUsersHeading,
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Register another account on a different device/tab to test live chat!',
+                      HomeViewConstants.homeViewNoUsersSubHeading,
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
@@ -132,7 +133,7 @@ class HomeView extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 leading: CircleAvatar(
                   radius: 24,
-                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.15),
+                  backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.15),
                   child: Text(
                     user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
                     style: TextStyle(

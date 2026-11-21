@@ -1,32 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '../models/message_model.dart';
 import '../models/user_model.dart';
 
-class ChatController with ChangeNotifier {
+class ChatController extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool _isSending = false;
-  String? _errorMessage;
 
   bool get isSending => _isSending;
-  String? get errorMessage => _errorMessage;
-
 
   Stream<List<UserModel>> getUsersStream() {
     final currentUserId = _auth.currentUser?.uid;
-
+    if (currentUserId == null) {
+      return const Stream.empty();
+    }
     return _firestore
         .collection('users')
+        .where(FieldPath.documentId, isNotEqualTo: currentUserId)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => UserModel.fromMap(doc.data(), doc.id))
-          .where((user) => user.uid != currentUserId)
-          .toList();
-    });
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => UserModel.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   Stream<List<MessageModel>> getMessagesStream(String otherUserId) {
@@ -49,13 +49,13 @@ class ChatController with ChangeNotifier {
         )
         .snapshots()
         .map((snapshot) {
-      final messages = snapshot.docs
-          .map((doc) => MessageModel.fromMap(doc.data(), doc.id))
-          .toList();
+          final messages = snapshot.docs
+              .map((doc) => MessageModel.fromMap(doc.data(), doc.id))
+              .toList();
 
-      messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-      return messages;
-    });
+          messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+          return messages;
+        });
   }
 
   Future<bool> sendMessage({
@@ -65,38 +65,25 @@ class ChatController with ChangeNotifier {
     final currentUserId = _auth.currentUser?.uid;
     final text = message.trim();
 
-    if (currentUserId == null || text.isEmpty) {
-      return false;
-    }
+    if (currentUserId == null || text.isEmpty) return false;
 
     _isSending = true;
-    _errorMessage = null;
     notifyListeners();
 
     try {
-      final messageData = {
+      await _firestore.collection('messages').add({
         'senderId': currentUserId,
         'receiverId': receiverId,
         'message': text,
         'timestamp': FieldValue.serverTimestamp(),
-      };
-
-      await _firestore.collection('messages').add(messageData);
-
-      _isSending = false;
-      notifyListeners();
+      });
       return true;
-
     } catch (e) {
-      _isSending = false;
-      _errorMessage = 'Failed to send message: ${e.toString()}';
-      notifyListeners();
+      print('Error sending message: $e');
       return false;
+    } finally {
+      _isSending = false;
+      notifyListeners();
     }
-  }
-
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
   }
 }
