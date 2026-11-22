@@ -56,10 +56,6 @@ class _RegisterViewState extends State<RegisterView> {
     final authController = Provider.of<AuthController>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(RegisterViewConstants.registerViewAppBarTitle),
-        elevation: 0,
-      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

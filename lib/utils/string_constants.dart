@@ -48,6 +48,20 @@ abstract class ChatViewConstants {
   static const String noMessage = 'No messages yet';
   static const String sayHello = 'Say hello to';
   static const String typeMessage = 'Type a message...';
+  static const String deleteMessageTitle = 'Delete Message';
+  static const String deleteMessageConfirm =
+      'Are you sure you want to delete this message?';
+  static const String delete = 'Delete';
+  static const String cancel = 'Cancel';
+  static const String deleteMessageFailed = 'Failed to delete message';
+  static const String deleteOnlyOwnMessage =
+      'You can only delete your own messages';
+  static const String editMessage = 'Edit Message';
+  static const String editMessageTitle = 'Edit Message';
+  static const String update = 'Update';
+  static const String updateMessageFailed = 'Failed to update message';
+  static const String actionOnlyOwnMessage =
+      'You can only edit or delete your own messages';
 }
 
 abstract class HomeViewConstants {

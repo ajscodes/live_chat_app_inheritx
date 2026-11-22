@@ -41,8 +41,10 @@ class _ChatViewState extends State<ChatView> {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
 
-    _messageController.clear();
     final chatController = Provider.of<ChatController>(context, listen: false);
+    if (chatController.isSending) return;
+
+    _messageController.clear();
 
     final sent = await chatController.sendMessage(
       receiverId: widget.receiver.uid,
@@ -62,6 +64,167 @@ class _ChatViewState extends State<ChatView> {
         ),
       );
     }
+  }
+
+  void _showMessageOptions(MessageModel message, bool isCurrentUser) {
+    if (!isCurrentUser) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(ChatViewConstants.actionOnlyOwnMessage),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 6),
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.edit_rounded, color: Colors.blueAccent),
+              title: const Text(ChatViewConstants.editMessage),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showEditDialog(message);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
+              title: const Text(
+                ChatViewConstants.deleteMessageTitle,
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showDeleteDialog(message);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEditDialog(MessageModel message) {
+    final editController = TextEditingController(text: message.message);
+    editController.selection = TextSelection.fromPosition(
+      TextPosition(offset: editController.text.length),
+    );
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(ChatViewConstants.editMessageTitle),
+        content: TextField(
+          controller: editController,
+          autofocus: true,
+          maxLines: null,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: InputDecoration(
+            hintText: ChatViewConstants.typeMessage,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 10,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(ChatViewConstants.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newText = editController.text.trim();
+              if (newText.isEmpty) return;
+
+              if (newText == message.message.trim()) {
+                Navigator.pop(ctx);
+                return;
+              }
+
+              Navigator.pop(ctx);
+              final chatController =
+                  Provider.of<ChatController>(context, listen: false);
+              final success = await chatController.updateMessage(
+                messageId: message.id,
+                newMessage: newText,
+              );
+
+              if (!mounted) return;
+
+              if (!success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(ChatViewConstants.updateMessageFailed),
+                    backgroundColor: Colors.redAccent,
+                  ),
+                );
+              }
+            },
+            child: const Text(ChatViewConstants.update),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(MessageModel message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(ChatViewConstants.deleteMessageTitle),
+        content: const Text(ChatViewConstants.deleteMessageConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text(ChatViewConstants.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final chatController =
+                  Provider.of<ChatController>(context, listen: false);
+              final success = await chatController.deleteMessage(message.id);
+
+              if (!mounted) return;
+
+              if (!success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(ChatViewConstants.deleteMessageFailed),
+                    backgroundColor: Colors.redAccent,
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            child: const Text(
+              ChatViewConstants.delete,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -180,6 +343,7 @@ class _ChatViewState extends State<ChatView> {
                     return ChatMessage(
                       message: message,
                       isCurrentUser: isCurrentUser,
+                      onLongPress: () => _showMessageOptions(message, isCurrentUser),
                     );
                   },
                 );
@@ -224,31 +388,17 @@ class _ChatViewState extends State<ChatView> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Selector<ChatController, bool>(
-                    selector: (_, controller) => controller.isSending,
-                    builder: (context, isSending, _) {
-                      return CircleAvatar(
-                        radius: 24,
-                        backgroundColor: Theme.of(context).primaryColor,
-                        child: IconButton(
-                          icon: isSending
-                              ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                              : const Icon(
-                            Icons.send_rounded,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          onPressed: isSending ? null : _sendMessage,
-                        ),
-                      );
-                    },
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.send_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      onPressed: _sendMessage,
+                    ),
                   ),
                 ],
               ),

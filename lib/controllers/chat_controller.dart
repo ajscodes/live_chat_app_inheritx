@@ -86,4 +86,39 @@ class ChatController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> updateMessage({
+    required String messageId,
+    required String newMessage,
+  }) async {
+    final currentUserId = _auth.currentUser?.uid;
+    final text = newMessage.trim();
+
+    if (currentUserId == null || messageId.isEmpty || text.isEmpty) {
+      return false;
+    }
+
+    try {
+      await _firestore.collection('messages').doc(messageId).update({
+        'message': text,
+      });
+      return true;
+    } catch (e) {
+      debugPrint('Error updating message: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteMessage(String messageId) async {
+    final currentUserId = _auth.currentUser?.uid;
+    if (currentUserId == null || messageId.isEmpty) return false;
+
+    try {
+      await _firestore.collection('messages').doc(messageId).delete();
+      return true;
+    } catch (e) {
+      debugPrint('Error deleting message: $e');
+      return false;
+    }
+  }
 }
