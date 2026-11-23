@@ -13,12 +13,12 @@ class HomeView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to sign out?'),
+        title: const Text(AlertDialogueConstants.logOut),
+        content: const Text(AlertDialogueConstants.signOutConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: const Text(AlertDialogueConstants.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -26,7 +26,7 @@ class HomeView extends StatelessWidget {
               authController.logout();
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            child: const Text('Logout', style: TextStyle(color: Colors.white)),
+            child: const Text(AlertDialogueConstants.logOut, style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -41,7 +41,7 @@ class HomeView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
+        elevation: 3,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,7 +54,7 @@ class HomeView extends StatelessWidget {
                 currentUser.displayName ?? currentUser.email ?? '',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                  color: Colors.grey[700],
                 ),
               ),
           ],
@@ -62,7 +62,6 @@ class HomeView extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout_rounded),
-            tooltip: HomeViewConstants.homeViewLogout,
             onPressed: () => _showLogoutDialog(context, authController),
           ),
         ],
@@ -122,8 +121,8 @@ class HomeView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemCount: users.length,
             separatorBuilder: (context, index) => const Divider(
-              indent: 72,
-              endIndent: 16,
+              endIndent: 15,
+              indent: 15,
               height: 1,
             ),
             itemBuilder: (context, index) {
@@ -135,7 +134,7 @@ class HomeView extends StatelessWidget {
                   radius: 24,
                   backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.15),
                   child: Text(
-                    user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
+                    user.name.isNotEmpty ? user.name[0].toUpperCase() : HomeViewConstants.homeViewDefaultUserInitial,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

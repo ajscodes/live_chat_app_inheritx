@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../controllers/auth_controller.dart';
 import '../../utils/string_constants.dart';
 
@@ -11,11 +12,12 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -28,7 +30,9 @@ class _RegisterViewState extends State<RegisterView> {
   }
 
   void _submitRegister() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     final authController = Provider.of<AuthController>(context, listen: false);
     final success = await authController.register(
@@ -37,7 +41,9 @@ class _RegisterViewState extends State<RegisterView> {
       password: _passwordController.text,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     if (success) {
       Navigator.pop(context);
@@ -59,7 +65,10 @@ class _RegisterViewState extends State<RegisterView> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -68,9 +77,7 @@ class _RegisterViewState extends State<RegisterView> {
                 children: [
                   Text(
                     RegisterViewConstants.registerViewHeading,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -92,7 +99,8 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return RegisterViewConstants.registerViewNameRequiredError;
+                        return RegisterViewConstants
+                            .registerViewNameRequiredError;
                       }
                       return null;
                     },
@@ -112,10 +120,12 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return RegisterViewConstants.registerViewEmailRequiredError;
+                        return RegisterViewConstants
+                            .registerViewEmailRequiredError;
                       }
                       if (!val.contains('@') || !val.contains('.')) {
-                        return RegisterViewConstants.registerViewEmailInvalidError;
+                        return RegisterViewConstants
+                            .registerViewEmailInvalidError;
                       }
                       return null;
                     },
@@ -126,7 +136,8 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      labelText: RegisterViewConstants.registerViewPasswordLabel,
+                      labelText:
+                          RegisterViewConstants.registerViewPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -146,10 +157,12 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return RegisterViewConstants.registerViewPasswordRequiredError;
+                        return RegisterViewConstants
+                            .registerViewPasswordRequiredError;
                       }
                       if (val.length < 6) {
-                        return RegisterViewConstants.registerViewPasswordLengthError;
+                        return RegisterViewConstants
+                            .registerViewPasswordLengthError;
                       }
                       return null;
                     },
@@ -160,7 +173,8 @@ class _RegisterViewState extends State<RegisterView> {
                     controller: _confirmPasswordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      labelText: RegisterViewConstants.registerViewConfirmPasswordLabel,
+                      labelText: RegisterViewConstants
+                          .registerViewConfirmPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_clock_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -168,10 +182,12 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return RegisterViewConstants.registerViewConfirmPasswordRequiredError;
+                        return RegisterViewConstants
+                            .registerViewConfirmPasswordRequiredError;
                       }
                       if (val != _passwordController.text) {
-                        return RegisterViewConstants.registerViewPasswordMismatchError;
+                        return RegisterViewConstants
+                            .registerViewPasswordMismatchError;
                       }
                       return null;
                     },
@@ -179,7 +195,9 @@ class _RegisterViewState extends State<RegisterView> {
                   const SizedBox(height: 28),
 
                   ElevatedButton(
-                    onPressed: authController.isLoading ? null : _submitRegister,
+                    onPressed: authController.isLoading
+                        ? null
+                        : _submitRegister,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -189,20 +207,20 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                     child: authController.isLoading
                         ? const SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: Colors.white,
-                      ),
-                    )
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
+                          )
                         : const Text(
-                      RegisterViewConstants.registerViewAppBarTitle,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                            RegisterViewConstants.registerViewAppBarTitle,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 20),
 

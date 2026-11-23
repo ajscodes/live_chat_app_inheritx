@@ -76,3 +76,9 @@ abstract class HomeViewConstants {
       'Register another account on a different device/tab to test live chat!';
   static const String homeViewDefaultUserInitial = 'U';
 }
+
+abstract class AlertDialogueConstants {
+  static const String logOut = 'Logout';
+  static const String signOutConfirmation = 'Are you sure you want to log out?';
+  static const String cancel = 'Cancel';
+}

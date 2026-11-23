@@ -13,7 +13,7 @@ class AuthController extends ChangeNotifier {
     _auth.authStateChanges().listen((_) => notifyListeners());
   }
 
-  User? get currentUser => _auth.currentUser; //user Object return in case log in
+  User? get currentUser => _auth.currentUser;
   bool get isAuthenticated => _auth.currentUser != null;
   bool get isLoading => _isLoading;
 
@@ -93,6 +93,7 @@ class AuthController extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await _auth.signOut();
+    try{await _auth.signOut();}catch(e){print("Exception $e");}
+
   }
 }

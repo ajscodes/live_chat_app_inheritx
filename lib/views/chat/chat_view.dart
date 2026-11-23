@@ -56,7 +56,7 @@ class _ChatViewState extends State<ChatView> {
     if (sent) {
       Future.delayed(const Duration(milliseconds: 100), _scrollToBottom);
     } else {
-      _messageController.text = text; // Restore text so user doesn't lose it
+      _messageController.text = text;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to send message'),
@@ -121,7 +121,7 @@ class _ChatViewState extends State<ChatView> {
   }
 
   void _showEditDialog(MessageModel message) {
-    final editController = TextEditingController(text: message.message);
+    final TextEditingController editController = TextEditingController(text: message.message);
     editController.selection = TextSelection.fromPosition(
       TextPosition(offset: editController.text.length),
     );
@@ -243,10 +243,10 @@ class _ChatViewState extends State<ChatView> {
               child: Text(
                 widget.receiver.name.isNotEmpty
                     ? widget.receiver.name[0].toUpperCase()
-                    : 'U',
+                    : HomeViewConstants.homeViewDefaultUserInitial,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),
@@ -265,7 +265,7 @@ class _ChatViewState extends State<ChatView> {
                     widget.receiver.email,
                     style: TextStyle(
                       fontSize: 11,
-                      color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                      color: Colors.grey[700],
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),

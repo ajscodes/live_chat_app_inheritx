@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:live_chat_app_inheritx/utils/string_constants.dart';
 import 'package:provider/provider.dart';
+
 import '../../controllers/auth_controller.dart';
 import 'register_view.dart';
 
@@ -12,9 +13,9 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
@@ -25,7 +26,9 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void _submitLogin() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     final authController = Provider.of<AuthController>(context, listen: false);
     final success = await authController.login(
@@ -33,7 +36,9 @@ class _LoginViewState extends State<LoginView> {
       password: _passwordController.text,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     if (!success) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -53,7 +58,10 @@ class _LoginViewState extends State<LoginView> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -62,7 +70,8 @@ class _LoginViewState extends State<LoginView> {
                 children: [
                   CircleAvatar(
                     radius: 42,
-                    backgroundColor: Theme.of(context).primaryColor.withOpacity(0.12),
+                    backgroundColor: Theme.of(context).primaryColor
+                        .withValues(alpha: 0.12),
                     child: Icon(
                       Icons.chat_bubble_rounded,
                       size: 48,
@@ -74,9 +83,7 @@ class _LoginViewState extends State<LoginView> {
                   Text(
                     LoginViewConstants.loginViewHeading,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -99,10 +106,12 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
-                        return RegisterViewConstants.registerViewEmailRequiredError;
+                        return RegisterViewConstants
+                            .registerViewEmailRequiredError;
                       }
                       if (!val.contains('@') || !val.contains('.')) {
-                        return RegisterViewConstants.registerViewEmailRequiredError;
+                        return RegisterViewConstants
+                            .registerViewEmailRequiredError;
                       }
                       return null;
                     },
@@ -113,7 +122,8 @@ class _LoginViewState extends State<LoginView> {
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      labelText: RegisterViewConstants.registerViewPasswordLabel,
+                      labelText:
+                          RegisterViewConstants.registerViewPasswordLabel,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -133,10 +143,12 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return RegisterViewConstants.registerViewEmailRequiredError;
+                        return RegisterViewConstants
+                            .registerViewPasswordRequiredError;
                       }
                       if (val.length < 6) {
-                        return RegisterViewConstants.registerViewPasswordLengthError;
+                        return RegisterViewConstants
+                            .registerViewPasswordLengthError;
                       }
                       return null;
                     },
@@ -154,20 +166,20 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     child: authController.isLoading
                         ? const SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.5,
-                        color: Colors.white,
-                      ),
-                    )
+                            height: 22,
+                            width: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
+                          )
                         : const Text(
-                      LoginViewConstants.loginViewSubmitButton,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                            LoginViewConstants.loginViewSubmitButton,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 20),
 

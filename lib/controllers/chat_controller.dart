@@ -104,7 +104,7 @@ class ChatController extends ChangeNotifier {
       });
       return true;
     } catch (e) {
-      debugPrint('Error updating message: $e');
+      print('Error updating message: $e');
       return false;
     }
   }
