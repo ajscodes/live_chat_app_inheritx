@@ -146,10 +146,6 @@ class _LoginViewState extends State<LoginView> {
                         return RegisterViewConstants
                             .registerViewPasswordRequiredError;
                       }
-                      if (val.length < 6) {
-                        return RegisterViewConstants
-                            .registerViewPasswordLengthError;
-                      }
                       return null;
                     },
                   ),
